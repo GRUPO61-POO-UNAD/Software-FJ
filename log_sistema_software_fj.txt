@@ -1,0 +1,16 @@
+
+--- NUEVA SESIÓN DE EJECUCIÓN DEL SISTEMA ---
+[ERROR OP 2] Excepción esperada: El nombre del cliente no puede contener caracteres especiales o números.
+[ERROR OP 3] Excepción esperada: El teléfono del cliente debe tener exactamente 10 dígitos.
+[ERROR OP 5] Excepción esperada: El precio por hora debe ser mayor a cero.
+[ERROR OP 8] Excepción esperada: La duración estipulada debe ser mayor a cero.
+[ERROR OP 10] Excepción esperada de negocio: Restricción de flujo: Imposible cancelar una reserva que ya cuenta con estado Confirmada.
+--- FIN DE LA EVALUACIÓN DE OPERACIONES SIMULADAS ---
+
+--- NUEVA SESIÓN DE EJECUCIÓN DEL SISTEMA ---
+[ERROR OP 2] Excepción esperada: El nombre del cliente no puede contener caracteres especiales o números.
+[ERROR OP 3] Excepción esperada: El teléfono del cliente debe tener exactamente 10 dígitos.
+[ERROR OP 5] Excepción esperada: El precio por hora debe ser mayor a cero.
+[ERROR OP 8] Excepción esperada: La duración estipulada debe ser mayor a cero.
+[ERROR OP 10] Excepción esperada de negocio: Restricción de flujo: Imposible cancelar una reserva que ya cuenta con estado Confirmada.
+--- FIN DE LA EVALUACIÓN DE OPERACIONES SIMULADAS ---
