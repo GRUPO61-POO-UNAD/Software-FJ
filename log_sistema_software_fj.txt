@@ -22,3 +22,51 @@
 [ERROR OP 8] Excepción esperada: La duración estipulada debe ser mayor a cero.
 [ERROR OP 10] Excepción esperada de negocio: Restricción de flujo: Imposible cancelar una reserva que ya cuenta con estado Confirmada.
 --- FIN DE LA EVALUACIÓN DE OPERACIONES SIMULADAS ---
+
+--- NUEVA SESIÓN DE EJECUCIÓN DEL SISTEMA ---
+[ERROR OP 2] Excepción esperada: El nombre del cliente no puede contener caracteres especiales o números.
+[ERROR OP 3] Excepción esperada: El teléfono del cliente debe tener exactamente 10 dígitos.
+[ERROR OP 5] Excepción esperada: El precio por hora debe ser mayor a cero.
+[ERROR OP 8] Excepción esperada: La duración estipulada debe ser mayor a cero.
+[ERROR OP 10] Excepción esperada de negocio: Restricción de flujo: Imposible cancelar una reserva que ya cuenta con estado Confirmada.
+--- FIN DE LA EVALUACIÓN DE OPERACIONES SIMULADAS ---
+
+--- NUEVA SESIÓN DE EJECUCIÓN DEL SISTEMA ---
+[ERROR OP 2] Excepción esperada: El nombre del cliente no puede contener caracteres especiales o números.
+[ERROR OP 3] Excepción esperada: El teléfono del cliente debe tener exactamente 10 dígitos.
+[ERROR OP 5] Excepción esperada: El precio por hora debe ser mayor a cero.
+[ERROR OP 8] Excepción esperada: La duración estipulada debe ser mayor a cero.
+[ERROR OP 10] Excepción esperada de negocio: Restricción de flujo: Imposible cancelar una reserva que ya cuenta con estado Confirmada.
+--- FIN DE LA EVALUACIÓN DE OPERACIONES SIMULADAS ---
+El nombre del cliente no puede estar vacío.
+El nombre del cliente no puede contener caracteres especiales o números.
+El correo del cliente no puede estar vacío.
+El correo del cliente debe tener un formato válido.
+El correo del cliente debe tener un formato válido.
+El teléfono del cliente no puede estar vacío.
+El teléfono del cliente solo puede contener números.
+El teléfono del cliente solo puede contener números.
+Cliente: Juan David
+El nombre del cliente no puede estar vacío.
+Servicio: Alquiler de computador
+Debe ingresar el precio del servicio.
+Debe ingresar el precio del servicio.
+El nombre del equipo no puede estar vacío.
+Debe ingresar el precio del servicio.
+El tipo de sala no puede estar vacío.
+La especialidad de la asesoría no puede estar vacía.
+Servicio: Reserva de Sala auditorio
+Servicio: Asesoría en programacion
+Reserva: 9
+Debe ingresar la duración de la reserva.
+La duración estipulada debe ser mayor a cero.
+La duración debe ser un número entero.
+Debe ingresar la duración de la reserva.
+Debe ingresar la duración de la reserva.
+Reserva: 10
+Debe ingresar la duración de la reserva.
+Reserva: 11
+Reserva: 12
+Debe ingresar la duración de la reserva.
+Reserva: 13
+Reserva: 14

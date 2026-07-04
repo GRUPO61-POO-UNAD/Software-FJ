@@ -380,3 +380,612 @@ print("\n==========================================================")
 print("   PROCESAMIENTO TERMINADO SIN CAÍDAS DEL PROGRAMA")
 print("==========================================================")
 print("Los registros y errores controlados se encuentran en 'log_sistema_software_fj.txt'.")
+
+
+# ==============================================================================
+# APORTE JUAN DAVID - DESARROLLO DE LA INTERFAZ GRAFICA 
+# ==============================================================================
+
+#Librería necesaria para crear la interfaz grafica
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+
+
+# Se crea la ventana principal de la aplicación.
+ventana = tk.Tk()
+
+# Se establece el título que aparecerá en la barra superior de la ventana.
+ventana.title("SOFTWARE FJ - Sistema de Gestión Integral")
+
+#Se define el tamaño fijo de la ventana
+ventana.geometry("1250x750")
+
+#Se deshabilita la opción de redimensionar la ventana
+ventana.resizable(False, False)
+
+
+
+# ==============================================================================
+# VARIABLES
+# ==============================================================================
+
+#Variable de control para el tipo de servicio seleccionado en el combobox
+tipo_servicio_var = tk.StringVar(value="Alquiler de Equipos")
+
+#Diccionarios para poder acceder a los objetos de clientes, servicios y reservas desde los combobox
+clientes_dict = {}
+servicios_dict = {}
+reservas_dict = {}
+
+
+
+# ==============================================================================
+# ACTUALIZADORES DE COMBOBOX
+# ==============================================================================
+
+#Metodo que actualiza el combobox de clientes con los clientes registrados
+def actualizar_clientes():
+
+    #Se crea una lista de opciones para el combobox 
+    valores = []
+
+    #Se limpia el diccionario de clientes 
+    clientes_dict.clear()
+
+    #Se recorre la lista de clientes registrados
+    for c in clientes_registrados:
+
+        #Se construye el texto que se mostrará en el combobox y se agrega al diccionario de clientes
+        key = f"{c.obtener_id()} - {c.obtener_nombre()}"
+        clientes_dict[key] = c
+
+        #Se agrega el texto a la lista de opciones del combobox
+        valores.append(key)
+    
+    #Se actualiza el combobox de clientes con los valores generados
+    combo_cliente_reserva["values"] = valores
+
+
+#Metodo que actualiza el combobox de servicios con los servicios registrados
+def actualizar_servicios():
+
+    #Se crea una lista de opciones para el combobox 
+    valores = []
+
+    #Se limpia el diccionario de servicios
+    servicios_dict.clear()
+
+    #Se recorre la lista de servicios registrados
+    for s in servicios_registrados:
+
+        #Se construye el texto que se mostrará en el combobox y se agrega al diccionario de servicios
+        key = f"{s.obtener_id()} - {s.obtener_nombre_servicio()}"
+        servicios_dict[key] = s
+
+        #Se agrega el texto a la lista de opciones del combobox
+        valores.append(key)
+
+    #Se actualiza el combobox de servicios con los valores generados
+    combo_servicio_reserva["values"] = valores
+
+
+#Metodo que actualiza el combobox de reservas con las reservas registradas
+def actualizar_reservas():
+
+    #Se crea una lista de opciones para el combobox 
+    valores = []
+
+    #Se limpia el diccionario de reservas
+    reservas_dict.clear()
+
+    #Se recorre la lista de reservas registradas
+    for r in reservas_registradas:
+
+        #Se construye el texto que se mostrará en el combobox y se agrega al diccionario de reservas
+        key = f"Reserva #{r.obtener_id()} - {r.obtener_cliente().obtener_nombre()}"
+        reservas_dict[key] = r
+
+        #Se agrega el texto a la lista de opciones del combobox
+        valores.append(key)
+
+    #Se actualiza el combobox de reservas con los valores generados
+    combo_reservas["values"] = valores
+
+
+
+# ==============================================================================
+# RESULTADOS
+# ==============================================================================
+
+#Metodo que muestra un texto en el cuadro de resultados de la interfaz
+def mostrar(texto):
+    txt_resultado.config(state="normal")
+    txt_resultado.delete("1.0", tk.END)
+    txt_resultado.insert(tk.END, texto)
+    txt_resultado.config(state="disabled")
+
+
+
+# ==============================================================================
+# CLIENTE
+# ==============================================================================
+
+#Metodo encargado de registrar un cliente desde la interfaz grafica
+def registrar_cliente():
+
+    try:
+
+        #Se crea un objeto Cliente con los datos ingresados por el usuario
+        c = Cliente(
+            entry_nombre.get(),
+            entry_correo.get(),
+            entry_telefono.get()
+        )
+
+        #Se agrega el cliente a la lista de clientes registrados
+        clientes_registrados.append(c)
+
+        #Se actualiza el combobox de clientes con el nuevo cliente registrado
+        actualizar_clientes()
+
+        #Se registra el evento en el log
+        registrar_log(f"Cliente: {c.obtener_nombre()}")
+
+        #Se muestra la información del cliente registrado en el cuadro de resultados de la interfaz
+        mostrar("CLIENTE REGISTRADO\n\n" + f"ID: {c.obtener_id()}\n" + f"Nombre: {c.obtener_nombre()}\n" + f"Correo: {c.obtener_correo()}\n" + f"Teléfono: {c.obtener_telefono()}")
+
+        #Se limpian los campos de entrada de la interfaz 
+        entry_nombre.delete(0, tk.END)
+        entry_correo.delete(0, tk.END)
+        entry_telefono.delete(0, tk.END)
+
+    #Se captura cualquier excepción que ocurra durante el registro del cliente 
+    except Exception as e:
+
+        #Se muestra un mensaje de error en la interfaz
+        messagebox.showerror("Error", str(e))
+
+        #Se registra el error en el log
+        registrar_log(str(e))
+
+
+#Metodo encargado de mostrar los clientes registrados en el cuadro de resultados de la interfaz
+def ver_clientes():
+
+    #Se verifica si hay clientes registrados, si no los hay se muestra un mensaje
+    if not clientes_registrados:
+        mostrar("NO HAY CLIENTES REGISTRADOS")
+        return
+    
+    #Se construye un texto con la información de la lista de clientes registrados
+    texto = "LISTA DE CLIENTES REGISTRADOS\n\n"
+    for c in clientes_registrados:
+        texto += (
+            f"ID: {c.obtener_id()} | "
+            f"Nombre: {c.obtener_nombre()} | "
+            f"Correo: {c.obtener_correo()} | "
+            f"Teléfono: {c.obtener_telefono()}\n"
+        )
+
+    #Se muestra el texto en el cuadro de resultados de la interfaz
+    mostrar(texto)
+
+
+
+# ==============================================================================
+# SERVICIO
+# ==============================================================================
+
+#Metodo encargado de registrar un servicio desde la interfaz grafica
+def registrar_servicio():
+
+    try:
+
+        #Se obtienen los datos ingresados por el usuario en la interfaz
+        nombre = entry_servicio_nombre.get()
+        precio=(entry_servicio_precio.get())
+        tipo = tipo_servicio_var.get()
+
+        #Se valida que el precio del servicio no este vacio
+        if precio == "":
+            raise ValueError("Debe ingresar el precio del servicio.")
+        
+        #Se valida que el precio del servicio sea un número
+        try:
+            precio = float(precio)
+        except ValueError:
+            raise ValueError("El precio del servicio debe ser un número.")
+        
+        #Se valida que el precio del servicio sea mayor a cero
+        if precio <= 0:
+            raise ValueError("El precio del servicio debe ser mayor a cero.")
+
+        #A partir del tipo de servicio seleccionado, se crea un objeto de la subclase correspondiente
+        if tipo == "Alquiler de Equipos":
+            s = AlquilerEquipo(nombre, precio)
+        elif tipo == "Reserva de Salas":
+            s = ReservaSala(nombre, precio)
+        else:
+            s = AsesoriaEspecial(nombre, precio)
+
+        #Se agrega el servicio a la lista de servicios registrados
+        servicios_registrados.append(s)
+
+        #Se actualiza el combobox de servicios con el nuevo servicio registrado
+        actualizar_servicios()
+
+        #Se registra el evento en el log
+        registrar_log(f"Servicio: {s.obtener_nombre_servicio()}")
+
+        #Se muestra la información del servicio registrado en el cuadro de resultados de la interfaz
+        mostrar(s.describir_servicio())
+
+        #Se limpian los campos de entrada de la interfaz
+        entry_servicio_nombre.delete(0, tk.END)
+        entry_servicio_precio.delete(0, tk.END)
+
+    #Se captura cualquier excepción que ocurra durante el registro del servicio                     
+    except Exception as e:
+
+        #Se muestra un mensaje de error en la interfaz
+        messagebox.showerror("Error", str(e))
+
+        #Se registra el error en el log
+        registrar_log(str(e))
+
+
+#Metodo encargado de mostrar los servicios registrados en el cuadro de resultados de la interfaz
+def ver_servicios():
+
+    #Se verifica si hay servicios registrados, si no los hay se muestra un mensaje
+    if not servicios_registrados:
+        mostrar("NO HAY SERVICIOS REGISTRADOS")
+        return
+ 
+    #Se construye un texto con la información de la lista de servicios registrados
+    texto = "SERVICIOS REGISTRADOS\n\n"
+
+    #Se recorre la lista de servicios registrados y se obtiene la información correspondiente dependiendo del tipo de servicio
+    for s in servicios_registrados:
+ 
+        #Si corresponde a un servicio de alquiler de equipos, se obtiene el nombre del equipo y el precio por hora
+        if isinstance(s, AlquilerEquipo):
+            tipo = "Alquiler de Equipos"
+            nombre = s.obtener_nombre_equipo()
+            precio = f"{s.obtener_precio_por_hora()} / hora"
+
+        #Si corresponde a un servicio de reserva de salas, se obtiene el tipo de sala y el precio por día
+        elif isinstance(s, ReservaSala):
+            tipo = "Reserva de Salas"
+            nombre = s._ReservaSala__tipo_sala
+            precio = f"{s._ReservaSala__precio_por_dia} / día"
+
+        #Si corresponde a un servicio de asesoría especializada, se obtiene la especialidad y la tarifa fija
+        elif isinstance(s, AsesoriaEspecial):
+            tipo = "Asesoría Especializada"
+            nombre = s._AsesoriaEspecial__especialidad
+            precio = f"{s._AsesoriaEspecial__tarifa_fija} / sesión"
+ 
+        #Si no corresponde a ningun tipo de servicio
+        else:
+            tipo = "Desconocido"
+            nombre = "N/A"
+            precio = "N/A"
+
+        #Se agrega la información del servicio al texto que sera mostrado en el cuadro de resultados
+        texto += (
+            f"ID: {s.obtener_id()} | "
+            f"Tipo: {tipo} | "
+            f"Nombre: {nombre} | "
+            f"Precio: {precio}\n"
+        )
+
+    #Se muestra el texto en el cuadro de resultados de la interfaz
+    mostrar(texto)
+
+
+
+# ==============================================================================
+# RESERVA
+# ==============================================================================
+
+#Metodo encargado de registrar una reserva desde la interfaz grafica
+def crear_reserva():
+
+    try:
+        
+        #Se obtienen las claves seleccionadas en los combobox de cliente y servicio
+        c_key = combo_cliente_reserva.get()
+        s_key = combo_servicio_reserva.get()
+
+        #Se valida que se haya seleccionado un cliente
+        if c_key not in clientes_dict:
+            raise ValueError("Seleccione un cliente.")
+
+        #Se valida que se haya seleccionado un servicio
+        if s_key not in servicios_dict:
+            raise ValueError("Seleccione un servicio.")
+
+        #Se obtienen los objetos de cliente y servicio a partir de las claves seleccionadas
+        cliente = clientes_dict[c_key]
+        servicio = servicios_dict[s_key]
+
+        #Se obtiene la duración ingresada por el usuario
+        duracion_texto = entry_duracion.get()
+
+        #Se valida que la duración no esté vacía
+        if duracion_texto == "":
+            raise ValueError("Debe ingresar la duración de la reserva.")
+        
+        #Se valida que la duración sea un número entero
+        try:
+            duracion = int(duracion_texto)
+        except ValueError:
+            raise ValueError("La duración debe ser un número entero.")
+
+        #Se crea la reserva y se agrega a la lista de reservas registradas
+        r = Reserva(cliente, servicio, duracion)
+        reservas_registradas.append(r)
+
+        #Se actualiza el combobox de reservas con la nueva reserva registrada
+        actualizar_reservas()
+        
+        #Se registra el evento en el log
+        registrar_log(f"Reserva: {r.obtener_id()}")
+
+        #Se muestra la información de la reserva registrada en el cuadro de resultados de la interfaz
+        mostrar(r.mostrar_detalle())
+        entry_duracion.delete(0, tk.END)
+
+    #Se captura cualquier excepción que ocurra durante el registro de la reserva
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
+        registrar_log(str(e))
+ 
+
+#Metodo encargado de mostrar las reservas registradas en el cuadro de resultados de la interfaz
+def ver_reservas():
+
+    #Se verifica si hay reservas registradas, si no las hay se muestra un mensaje
+    if not reservas_registradas:
+        mostrar("NO HAY RESERVAS REGISTRADAS")
+        return
+
+    #Se construye un texto con la información de la lista de reservas registradas
+    texto = "LISTA DE RESERVAS REGISTRADAS\n\n"
+
+    #Se recorre la lista de reservas registradas y se obtiene la información de cada reserva
+    for r in reservas_registradas:
+        texto += r.mostrar_detalle() + "\n\n"
+
+    #Se muestra el texto en el cuadro de resultados de la interfaz
+    mostrar(texto)
+
+
+
+# ==============================================================================
+# ACCIONES RESERVA
+# ==============================================================================
+
+#Metodo encargado de confirmar una reserva registrada desde la interfaz grafica
+def confirmar_reserva():
+
+    #Se obtiene la reserva seleccionada en el combobox 
+    try:
+        key = combo_reservas.get()
+
+        #Se valida que se haya seleccionado una reserva
+        if not key:
+            messagebox.showwarning("Validación", "Debe seleccionar una reserva")
+            return
+
+        #Se obtiene el objeto de reserva a partir de la clave seleccionada
+        r = reservas_dict[key]
+
+        #Llamada al método de la clase Reserva para confirmar la reserva
+        r.confirmar_reserva()
+
+        #Actualiza el cuadro de resultados con la información de la reserva confirmada 
+        mostrar(r.mostrar_detalle())
+
+        #Se muestra un mensaje de éxito en la interfaz
+        messagebox.showinfo("Éxito", "Reserva confirmada correctamente")
+
+    #Se captura cualquier excepción relacionada con la regla de negocio al intentar confirmar la reserva
+    except RuntimeError as e:
+        messagebox.showerror("Regla de negocio", str(e))
+
+    #Se captura cualquier otra excepción que ocurra durante la confirmación de la reserva
+    except Exception as e:
+        messagebox.showerror("Error", "No se pudo confirmar la reserva")
+        registrar_log(str(e))
+
+
+#Metodo encargado de cancelar una reserva registrada desde la interfaz grafica
+def cancelar_reserva():
+    
+    #Se obtiene la reserva seleccionada en el combobox
+    try:
+        key = combo_reservas.get()
+
+        #Se valida que se haya seleccionado una reserva
+        if not key:
+            messagebox.showwarning("Validación", "Debe seleccionar una reserva")
+            return
+
+        #Se obtiene el objeto de reserva a partir de la clave seleccionada
+        r = reservas_dict[key]
+
+        #Llamada al método de la clase Reserva para cancelar la reserva
+        r.cancelar_reserva()
+
+        #Actualiza el cuadro de resultados con la información de la reserva cancelada
+        mostrar(r.mostrar_detalle())
+
+        #Se muestra un mensaje de éxito en la interfaz
+        messagebox.showinfo("Éxito", "Reserva cancelada correctamente")
+
+    #Se captura cualquier excepción relacionada con la regla de negocio al intentar cancelar la reserva
+    except RuntimeError as e:
+        messagebox.showerror("Regla de negocio", str(e))
+
+    #Se captura cualquier otra excepción que ocurra durante la cancelación de la reserva
+    except Exception as e:
+        messagebox.showerror("Error", "No se pudo cancelar la reserva")
+        registrar_log(str(e))
+
+
+#Metodo encargado de mostrar los detalles de una reserva registrada desde la interfaz grafica
+def ver_detalle_reserva():
+
+    #Se obtiene la reserva seleccionada en el combobox
+    try:
+        key = combo_reservas.get()
+
+        #Se valida que se haya seleccionado una reserva
+        if not key:
+            messagebox.showwarning("Validación", "Debe seleccionar una reserva")
+            return
+
+        #Se obtiene el objeto de reserva a partir de la clave seleccionada
+        r = reservas_dict[key]
+
+        #Actualiza el cuadro de resultados con la información de la reserva seleccionada
+        mostrar(r.mostrar_detalle())
+
+    #Se captura cualquier excepción que ocurra al intentar mostrar los detalles de la reserva
+    except Exception as e:
+        messagebox.showerror("Error", "No se pudo mostrar la información de la reserva")
+        registrar_log(str(e))
+
+
+
+# ==============================================================================
+# VISUAL
+# ==============================================================================
+
+# 1. REGISTRAR CLIENTE
+
+#Frame para agrupar los elementos relacionados con el registro de clientes
+frame1 = tk.LabelFrame(ventana, text="1.Registrar Cliente")
+frame1.place(x=10, y=10, width=380, height=230)
+
+#Etiqueta y campo de entrada para el nombre del cliente 
+tk.Label(frame1, text="Nombre").pack()
+entry_nombre = tk.Entry(frame1, width=40)
+entry_nombre.pack()
+
+#Etiqueta y campo de entrada para el correo del cliente
+tk.Label(frame1, text="Correo").pack()
+entry_correo = tk.Entry(frame1, width=40)
+entry_correo.pack()
+
+#Etiqueta y campo de entrada para el teléfono del cliente
+tk.Label(frame1, text="Teléfono").pack()
+entry_telefono = tk.Entry(frame1, width=40)
+entry_telefono.pack()
+
+#Boton para registrar un cliente 
+tk.Button(frame1, text="Registrar Cliente", command=registrar_cliente).pack(pady=5)
+
+#Botón para ver los clientes registrados
+tk.Button(frame1, text="Ver Clientes", command=ver_clientes).pack(pady=5)
+
+
+# 2. REGISTRAR SERVICIO
+
+#Frame para agrupar los elementos relacionados con el registro de servicios
+frame2 = tk.LabelFrame(ventana, text="2.Registrar Servicio")
+frame2.place(x=400, y=10, width=400, height=230)
+
+#Etiqueta y combobox para seleccionar el tipo de servicio 
+tk.Label(frame2, text="Tipo").pack()
+ttk.Combobox(frame2, textvariable=tipo_servicio_var,values=["Alquiler de Equipos", "Reserva de Salas", "Asesoria Especializada"], width=40).pack()
+
+#Etiqueta y campo de entrada para el nombre del Equipo/Sala/Especialidad 
+tk.Label(frame2, text="Nombre del Equipo/Sala/Especialidad").pack()
+entry_servicio_nombre = tk.Entry(frame2, width=40)
+entry_servicio_nombre.pack()
+
+#Etiqueta y campo de entrada para el precio del servicio
+tk.Label(frame2, text="Precio").pack()
+entry_servicio_precio = tk.Entry(frame2, width=40)
+entry_servicio_precio.pack()
+
+#Botón para registrar un servicio
+tk.Button(frame2, text="Registrar Servicio", command=registrar_servicio).pack(pady=5)
+
+#Botón para ver los servicios registrados
+tk.Button(frame2, text="Ver Servicios", command=ver_servicios).pack(pady=5)
+
+
+# 3. REGISTRAR RESERVA
+
+#Frame para agrupar los elementos relacionados con el registro de reservas
+frame3 = tk.LabelFrame(ventana, text="3.Registrar Reserva")
+frame3.place(x=820, y=10, width=400, height=230)
+
+#Etiqueta y combobox para seleccionar el cliente de la reserva
+tk.Label(frame3, text="Cliente").pack()
+combo_cliente_reserva = ttk.Combobox(frame3, width=40)
+combo_cliente_reserva.pack()
+
+#Etiqueta y combobox para seleccionar el servicio de la reserva
+tk.Label(frame3, text="Servicio").pack()
+combo_servicio_reserva = ttk.Combobox(frame3, width=40)
+combo_servicio_reserva.pack()
+
+#Etiqueta y campo de entrada para la duración de la reserva
+tk.Label(frame3, text="Duración").pack()
+entry_duracion = tk.Entry(frame3, width=40)
+entry_duracion.pack()
+
+#Botón para registrar una reserva
+tk.Button(frame3, text="Registrar Reserva", command=crear_reserva).pack(pady=5)
+
+#Botón para ver las reservas registradas
+tk.Button(frame3, text="Ver Reservas", command=ver_reservas).pack(pady=5)
+
+
+# 4. GESTIÓN RESERVAS
+
+#Frame para agrupar los elementos relacionados con la gestión de reservas
+frame4 = tk.LabelFrame(ventana, text="4.Gestión de Reservas")
+frame4.place(x=300, y=250, width=600, height=200)
+
+#Etiqueta y combobox para seleccionar la reserva registrada
+combo_reservas = ttk.Combobox(frame4, width=60)
+combo_reservas.pack(pady=5)
+
+#Botón para ver la información de la reserva
+tk.Button(frame4, text="Ver Detalles", command=ver_detalle_reserva).pack(padx=10)
+
+#Botón para confirmar una reserva
+tk.Button(frame4, text="Confirmar", command=confirmar_reserva).pack(side="left", padx=10)
+
+#Botón para cancelar una reserva
+tk.Button(frame4, text="Cancelar", command=cancelar_reserva).pack(side="right", padx=10)
+
+
+# RESULTADOS
+
+#Frame para mostrar los resultados de las operaciones
+frame5 = tk.LabelFrame(ventana, text="Resultados")
+frame5.place(x=10, y=460, width=1210, height=250)
+
+#Area de texto para mostrar los resultados de las operaciones
+txt_resultado = tk.Text(frame5, state="disabled")
+txt_resultado.pack(fill="both", expand=True)
+
+
+
+# ==============================================================================
+# INICIALIZACIÓN
+# ==============================================================================
+
+actualizar_clientes()
+actualizar_servicios()
+actualizar_reservas()
+
+ventana.mainloop()
