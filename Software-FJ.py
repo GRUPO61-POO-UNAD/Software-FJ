@@ -1,3 +1,7 @@
+#Estudiantes:
+#Juan David Calderón Amorocho
+#Henry Leonardo Borrero Lopez
+
 
 #Libreria necesaria para crear clases abstractas
 from abc import ABC
